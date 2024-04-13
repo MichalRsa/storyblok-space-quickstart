@@ -1,4 +1,5 @@
 import fs from "fs";
+import chalk from "chalk";
 
 export const makeDir = () => {
   const parent = "exportedData";
@@ -12,11 +13,11 @@ export const makeDir = () => {
         try {
           fs.mkdirSync(`./${parent}/${children}`);
         } catch (err) {
-          console.error("Error creating directory:", err);
+          chalk.red("Error creating directory:", err);
         }
       }
     } catch (err) {
-      console.error("Error creating directory:", err);
+      chalk.red("Error creating directory:", err);
     }
   }
 };

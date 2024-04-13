@@ -1,6 +1,8 @@
 import chalk from "chalk";
+import ora from "ora";
 
 export const clearSpace = async (StoryblokService) => {
+  const spinner = ora("Preparing space").start();
   try {
     const responseStories = await StoryblokService.getStories();
     const responseComponents = await StoryblokService.getComponents();
@@ -16,9 +18,10 @@ export const clearSpace = async (StoryblokService) => {
         StoryblokService.deleteComponent(component.id),
       ),
     );
-    console.log(chalk.blue.bold.underline("Space cleared"));
+    spinner.succeed("Space cleared");
   } catch (error) {
-    console.log(chalk.red("Erro while preapring space"));
-    console.log(chalk.red(error));
+    spinner.fail(
+      chalk.red("Error while preapring space", JSON.stringify(error)),
+    );
   }
 };

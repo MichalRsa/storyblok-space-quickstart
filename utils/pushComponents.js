@@ -1,11 +1,13 @@
 import fs from "fs";
 import chalk from "chalk";
+import ora from "ora";
 
 export const pushComponents = async (StoryblokService) => {
-  console.log(chalk.blue.bold.underline("Uploading components..."));
   const componentGroups = JSON.parse(
     fs.readFileSync("exportedData/component_group.json", "utf8"),
   );
+
+  const spinner = ora("Uploading component groups").start();
 
   const groups = await Promise.all(
     componentGroups.map((group) =>
@@ -14,18 +16,26 @@ export const pushComponents = async (StoryblokService) => {
           return response.data.component_group;
         })
         .catch((error) => {
-          console.log(chalk.red("Error while creating component groups"));
-          console.log(chalk.red(error));
+          spinner.fail(
+            chalk.red(
+              "Error while creating component groups",
+              JSON.stringify(error),
+            ),
+          );
         }),
     ),
-  ).then((data) => {
-    console.log(chalk.green("Component groups created"));
+  ).then((data, error) => {
+    if (error)
+      return spinner.error(chalk.red("Error while creating components", error));
+    spinner.succeed(chalk.green("Component groups created"));
     return data;
   });
 
   const components = JSON.parse(
     fs.readFileSync("exportedData/components.json", "utf8"),
   );
+
+  spinner.start("Uploading components");
 
   await Promise.all(
     components.map(async (component) =>
@@ -37,11 +47,10 @@ export const pushComponents = async (StoryblokService) => {
           ).uuid,
         },
       }).catch((error) => {
-        console.log(chalk.red("Error while creating components"));
-        console.log(chalk.red(error));
+        spinner.error(chalk.red("Error while creating components", error));
       }),
     ),
   ).then(() => {
-    console.log(chalk.green("Components created"));
+    spinner.succeed(chalk.green("Components created"));
   });
 };

@@ -1,11 +1,13 @@
 import fs from "fs";
 import chalk from "chalk";
+import ora from "ora";
 
 export const pushStories = (StoryblokService) => {
-  console.log(chalk.blue.bold.underline("Adding stories"));
+  const spinner = ora();
+
   fs.readdir("exportedData/stories/", async (err, files) => {
     if (err) {
-      console.log(chalk.red("Error reading directory:", err));
+      spinner.fail(chalk.red("Error reading directory:", err));
       return;
     }
 
@@ -30,14 +32,14 @@ export const pushStories = (StoryblokService) => {
       !!idsArray.find((id) => id.oldId === parentId);
 
     const pushFolders = async (folders) => {
-      if (count >= 20) return console.log(chalk.red("Too manu requests"));
+      if (count >= 20) return spinner.fail(chalk.red("Too manu requests"));
 
       if (folders.length === 0)
-        return console.log(
-          chalk.blue.bold.underline("All folders have been added"),
-        );
+        return spinner.succeed(chalk.green("All folders have been added"));
 
       const remainingFolders = [];
+
+      spinner.start("Adding folders");
 
       await folders.reduce((prevPromise, folder) => {
         return prevPromise.then(async () => {
@@ -59,7 +61,7 @@ export const pushStories = (StoryblokService) => {
             count++;
             return pushedFolder;
           } catch (error) {
-            console.log(chalk.red("Error while adding folder", error));
+            spinner.fail(chalk.red("Error while adding folder", error));
           }
         });
       }, Promise.resolve());
@@ -68,6 +70,8 @@ export const pushStories = (StoryblokService) => {
     };
 
     await pushFolders(folders);
+
+    spinner.start("Adding stories");
 
     await Promise.all(
       stories.map(async (story) => {
@@ -78,12 +82,12 @@ export const pushStories = (StoryblokService) => {
           : story.parent_id;
 
         await StoryblokService.postStory(story).catch((error) => {
-          console.log(chalk.red(`Error while adding story - ${story.name}`));
-          console.log(chalk.red(error));
+          spinner.error(
+            chalk.red(`Error while adding story - ${story.name}`),
+            error,
+          );
         });
       }),
-    ).then(() =>
-      console.log(chalk.blue.bold.underline("All Stories have been added")),
-    );
+    ).then(() => spinner.succeed(chalk.green("All Stories have been added")));
   });
 };
