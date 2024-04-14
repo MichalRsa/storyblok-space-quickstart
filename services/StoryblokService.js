@@ -39,6 +39,9 @@ export const initStoryblokClient = (spaceId, userToken) => {
   const deleteComponent = (id) =>
     Storyblok.delete(`/spaces/${spaceId}/components/${id}`);
 
+  const deleteComponentGroup = (id) =>
+    Storyblok.delete(`/spaces/${spaceId}/component_groups/${id}`);
+
   return {
     getStories,
     getComponents,
@@ -50,5 +53,6 @@ export const initStoryblokClient = (spaceId, userToken) => {
     postStory,
     deleteStory,
     deleteComponent,
+    deleteComponentGroup,
   };
 };

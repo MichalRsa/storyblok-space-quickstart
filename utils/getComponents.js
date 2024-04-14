@@ -3,9 +3,7 @@ import chalk from "chalk";
 import ora from "ora";
 
 export const getComponents = async (StoryblokService) => {
-  const spinner = ora(
-    chalk.blue.bold.underline("Fetching components from Storyblok"),
-  ).start();
+  const spinner = ora("Fetching components from Storyblok").start();
 
   try {
     const response = await StoryblokService.getComponents();

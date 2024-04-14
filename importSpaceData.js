@@ -8,7 +8,7 @@ export const importSpaceData = async (credentials, elements) => {
 
   const StoryblokService = initStoryblokClient(spaceId, userAuthToken);
 
-  await clearSpace(StoryblokService);
+  await clearSpace(StoryblokService, elements);
 
   if (elements.includes("components")) await pushComponents(StoryblokService);
 
