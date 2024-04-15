@@ -25,8 +25,7 @@ export const pushComponents = async (StoryblokService) => {
         }),
     ),
   ).then((data, error) => {
-    if (error)
-      return spinner.error(chalk.red("Error while creating components", error));
+    if (error) return;
     spinner.succeed(chalk.green("Component groups created"));
     return data;
   });
@@ -50,7 +49,8 @@ export const pushComponents = async (StoryblokService) => {
         spinner.error(chalk.red("Error while creating components", error));
       }),
     ),
-  ).then(() => {
+  ).then((_data, error) => {
+    if (error) return;
     spinner.succeed(chalk.green("Components created"));
   });
 };

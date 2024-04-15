@@ -3,8 +3,11 @@ import ora from "ora";
 
 export const clearSpace = async (StoryblokService, elements) => {
   const spinner = ora("Preparing space").start();
+
   try {
-    const responseStories = await StoryblokService.getStories();
+    const responseStories = await StoryblokService.getStories({
+      with_parent: "0",
+    });
     const responseComponents = await StoryblokService.getComponents();
 
     if (elements.includes("stories")) {
@@ -14,7 +17,7 @@ export const clearSpace = async (StoryblokService, elements) => {
         ),
       ).catch((error) => {
         spinner.fail(
-          chalk.red("Error while deleting storie", JSON.stringify(error)),
+          chalk.red("Error while deleting stories", JSON.stringify(error)),
         );
         throw error;
       });

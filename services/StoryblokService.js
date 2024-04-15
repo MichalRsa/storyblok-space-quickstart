@@ -5,7 +5,8 @@ export const initStoryblokClient = (spaceId, userToken) => {
     oauthToken: userToken,
   });
 
-  const getStories = () => Storyblok.get(`/spaces/${spaceId}/stories/`, {});
+  const getStories = (params) =>
+    Storyblok.get(`/spaces/${spaceId}/stories/`, { ...params });
 
   const getComponents = () =>
     Storyblok.get(`/spaces/${spaceId}/components/`, {});
