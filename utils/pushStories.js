@@ -48,15 +48,20 @@ export const pushStories = (StoryblokService) => {
             return remainingFolders.push(folder);
 
           folder.parent_id = isParent
-            ? pushedFoldersIds.find((ids) => (ids.oldId = folder.parent_id))
+            ? pushedFoldersIds.find((ids) => ids.oldId === folder.parent_id)
                 .newId
             : folder.parent_id;
+
           try {
             const res = await StoryblokService.postStory(folder);
 
             const pushedFolder = res.data.story;
 
-            pushedFoldersIds.push({ newId: pushedFolder.id, oldId: folder.id });
+            pushedFoldersIds.push({
+              name: folder.name,
+              newId: pushedFolder.id,
+              oldId: folder.id,
+            });
 
             count++;
             return pushedFolder;
@@ -82,12 +87,15 @@ export const pushStories = (StoryblokService) => {
           : story.parent_id;
 
         await StoryblokService.postStory(story).catch((error) => {
-          spinner.error(
-            chalk.red(`Error while adding story - ${story.name}`),
-            error,
+          spinner.fail(
+            `${chalk.red(`Error while adding story - ${story.name}`)}
+            ${JSON.stringify(error)}`,
           );
         });
       }),
-    ).then(() => spinner.succeed(chalk.green("All Stories have been added")));
+    ).then((_data, error) => {
+      if (error) return;
+      spinner.succeed(chalk.green("All Stories have been added"));
+    });
   });
 };
