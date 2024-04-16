@@ -1,6 +1,6 @@
 {
   "name": "storyblok-space-quickstart",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Tool for quickstarting new storyblok space between accounts, allows migrating content structures and stories, component folders and components.\"",
   "main": "index.js",
   "type": "module",

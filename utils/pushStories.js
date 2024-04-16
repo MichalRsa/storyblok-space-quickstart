@@ -32,7 +32,10 @@ export const pushStories = (StoryblokService) => {
       !!idsArray.find((id) => id.oldId === parentId);
 
     const pushFolders = async (folders) => {
-      if (count >= 20) return spinner.fail(chalk.red("Too manu requests"));
+      if (count >= 100)
+        return spinner.fail(
+          chalk.red("Too manu requests (hard limit 100 requests)"),
+        );
 
       if (folders.length === 0)
         return spinner.succeed(chalk.green("All folders have been added"));
